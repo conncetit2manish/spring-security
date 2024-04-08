@@ -7,10 +7,14 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+
+import javax.sql.DataSource;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -20,9 +24,10 @@ public class ProjectSecurityConfig {
     @Bean
     @Order(SecurityProperties.BASIC_AUTH_ORDER)
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf().disable();
         http.authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/account/**", "/balance/**", "/cards/**", "/loan/**").authenticated()
-                .requestMatchers("/contact/**", "notice/**").permitAll());
+                .requestMatchers("/contact/**", "/notice/**", "/user/**").permitAll());
         http.formLogin(withDefaults());
         http.httpBasic(withDefaults());
         return http.build();
@@ -49,7 +54,7 @@ public class ProjectSecurityConfig {
     /*
     Approach 2 to create in memory user without encryption of password
     using NoOpPasswordEncoder
-     */
+
     @Bean
     public InMemoryUserDetailsManager userDetailsManager() {
         UserDetails admin = User.withUsername("admin")
@@ -64,14 +69,22 @@ public class ProjectSecurityConfig {
 
         return new InMemoryUserDetailsManager(admin, user);
     }
+     */
 
 
     /*
     This is for Approach2 where  we have defined passwordEncoder as noOpPasswordEncoder
     This will let spring know that we dont want any encryption and we just want plantext password
      */
+
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
     }
+
+//    @Bean
+//    public UserDetailsService userDetailsService(DataSource dataSource) {
+//        return new JdbcUserDetailsManager(dataSource);
+//    }
 }
