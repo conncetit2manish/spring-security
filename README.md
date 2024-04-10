@@ -26,7 +26,8 @@ generateLoginPageHtml (function name)
 After that the next Filter which will execute is 
 ## UsernamePasswordAuthenticationFilter : 
 In this filter there is method called attemptAuthentication and the responsibility of this filter is extract the username and password from the http servlate request it
-receives, and with the help of this username and password an Object is created of type ## UsernamePasswordAuthenticationToken (which is implementation of Authentication interface)
+receives, and with the help of this username and password an Object is created of type 
+## UsernamePasswordAuthenticationToken (which is implementation of Authentication interface)
 
 After this AuthenticationManager filter gets executed and inside it authenticate method gets executed.
 It will iterate all the authentication provider and checks if credential is valid or not.
